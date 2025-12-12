@@ -1,6 +1,4 @@
-﻿using System;
-
-public class Meal : Entry
+﻿public class Meal : Entry
 {
     public double Quantity { get; set; }
 

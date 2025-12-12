@@ -1,7 +1,4 @@
-﻿using System;
-using Windows.System;
-
-public class Activity : Entry
+﻿public class Activity : Entry
 {
     public int Duration { get; set; }
     public double MET { get; set; }
