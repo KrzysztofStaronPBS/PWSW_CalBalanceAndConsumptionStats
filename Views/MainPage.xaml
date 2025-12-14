@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="Win.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Win.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="MainPage">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid Background="#FFF5F6F8" Padding="40">
+
+        <StackPanel Spacing="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <TextBlock Text="Menu główne"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+
+            <Button Content="Lista wpisów"
+                    Height="35"
+                    Background="#FF5C6BC0"
+                    Foreground="White"
+                    />
+
+            <Button Content="Posiłki"
+                    Height="35"
+                    Background="#FF26A69A"
+                    Foreground="White"
+                    />
+
+            <Button Content="Raporty"
+                    Height="35"
+                    Background="#FF78909C"
+                    Foreground="White"
+                    />
+            <Button Content="Podsumowanie dnia"
+                    Height="35"
+                    Background="#FF78909C"
+                    Foreground="White"
+                    />
+            <Button Content="Aktywności fizyczne"
+                    Height="35"
+                    Background="#FF78909C"
+                    Foreground="White"
+                    />
+            <Button Content="Profil użytkownika"
+                    Height="30"
+                    Background="#FF78909C"
+                    Foreground="White"
+                    />
+        </StackPanel>
+    </Grid>
+</Window>
