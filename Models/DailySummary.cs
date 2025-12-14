@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class DailySummary
@@ -14,4 +15,12 @@ public class DailySummary
 		TotalEaten = entries.OfType<Meal>().Sum(m => m.Calories);
 		TotalBurned = entries.OfType<Activity>().Sum(a => a.Calories);
 	}
+
+	public void Calculate(List<Entry> entries)
+	{
+		var todays = entries.Where(e => e.Date.Date == Date.Date);
+		TotalEaten = todays.OfType<Meal>().Sum(m => m.Calories);
+		TotalBurned = todays.OfType<Activity>().Sum(a => a.Calories);
+	}
+
 }
