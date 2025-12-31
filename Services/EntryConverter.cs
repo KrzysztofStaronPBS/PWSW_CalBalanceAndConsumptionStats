@@ -6,50 +6,41 @@ public class EntryConverter : JsonConverter<Entry>
 {
 	public override Entry Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		using (var doc = JsonDocument.ParseValue(ref reader))
+		using var doc = JsonDocument.ParseValue(ref reader);
+		var root = doc.RootElement;
+
+		if (!root.TryGetProperty("Type", out var typeProp))
+			throw new JsonException("Missing Type property for Entry.");
+
+		string type = typeProp.GetString() ?? throw new JsonException("Invalid Type value.");
+
+		return type switch
 		{
-			var root = doc.RootElement;
-
-			// Odczyt typu wpisu
-			if (!root.TryGetProperty("Type", out var typeProp))
-				throw new JsonException("Missing Type property for Entry.");
-
-			string type = typeProp.GetString() ?? "";
-
-			Entry entry;
-			switch (type)
-			{
-				case "Meal":
-					entry = JsonSerializer.Deserialize<Meal>(root.GetRawText(), options)!;
-					break;
-				case "Activity":
-					entry = JsonSerializer.Deserialize<Activity>(root.GetRawText(), options)!;
-					break;
-				default:
-					throw new JsonException($"Unknown entry type: {type}");
-			}
-
-			return entry;
-		}
+			"Meal" => JsonSerializer.Deserialize<Meal>(root.GetRawText(), options)
+					 ?? throw new JsonException("Failed to deserialize Meal."),
+			"Activity" => JsonSerializer.Deserialize<Activity>(root.GetRawText(), options)
+						 ?? throw new JsonException("Failed to deserialize Activity."),
+			_ => throw new JsonException($"Unknown entry type: {type}")
+		};
 	}
 
 	public override void Write(Utf8JsonWriter writer, Entry value, JsonSerializerOptions options)
 	{
-		// Dodajemy pole "Type" aby łatwo rozpoznać klasę przy odczycie
-		var type = value is Meal ? "Meal" : value is Activity ? "Activity" : "Entry";
+		string type = value switch
+		{
+			Meal => "Meal",
+			Activity => "Activity",
+			_ => throw new JsonException("Unsupported Entry type.")
+		};
+
+		writer.WriteStartObject();
+		writer.WriteString("Type", type);
 
 		var json = JsonSerializer.SerializeToElement(value, value.GetType(), options);
-		using (writer)
-		{
-			writer.WriteStartObject();
-			writer.WriteString("Type", type);
 
-			foreach (var prop in json.EnumerateObject())
-			{
-				prop.WriteTo(writer);
-			}
+		foreach (var prop in json.EnumerateObject())
+			prop.WriteTo(writer);
 
-			writer.WriteEndObject();
-		}
+		writer.WriteEndObject();
 	}
 }

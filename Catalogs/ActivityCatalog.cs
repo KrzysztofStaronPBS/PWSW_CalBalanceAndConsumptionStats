@@ -8,18 +8,25 @@ public class ActivityCatalog
 {
     public List<ActivityTemplate> Activities { get; set; } = new();
 
-    public void AddTemplate(ActivityTemplate template)
-    {
-        Activities.Add(template);
-    }
+	public void AddTemplate(ActivityTemplate template)
+	{
+		if (string.IsNullOrWhiteSpace(template.Name))
+			throw new ArgumentException("Activity name cannot be empty.");
+		if (template.MET <= 0)
+			throw new ArgumentException("MET must be greater than 0.");
+		if (Activities.Any(a => a.Name == template.Name))
+			throw new InvalidOperationException("Activity already exists.");
 
-    public double GetMet(string name)
+		Activities.Add(template);
+	}
+
+	public double GetMet(string name)
     {
         return Activities.FirstOrDefault(a => a.Name == name)?.MET
-            ?? throw new Exception("Activity not found.");
-    }
+            ?? throw new KeyNotFoundException("Activity not found.");
+	}
 
-    public static ActivityCatalog Load(string filePath)
+	public static ActivityCatalog Load(string filePath)
     {
         if (!File.Exists(filePath))
             return new ActivityCatalog();

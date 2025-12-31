@@ -8,15 +8,23 @@ public class MealCatalog
 {
     public List<MealTemplate> Meals { get; set; } = new();
 
-    public void AddTemplate(MealTemplate template)
-    {
-        Meals.Add(template);
-    }
+	public void AddTemplate(MealTemplate template)
+	{
+		if (string.IsNullOrWhiteSpace(template.Name))
+			throw new ArgumentException("Meal name cannot be empty.");
+		if (template.CaloriesPerPortion <= 0)
+			throw new ArgumentException("Calories must be greater than 0.");
+		if (Meals.Any(a => a.Name == template.Name))
+			throw new InvalidOperationException("Meal already exists.");
 
-    public int GetCalories(string name)
+
+		Meals.Add(template);
+	}
+
+	public int GetCalories(string name)
     {
         return Meals.FirstOrDefault(m => m.Name == name)?.CaloriesPerPortion
-            ?? throw new Exception("Meal not found.");
+            ?? throw new KeyNotFoundException("Meal not found.");
     }
 
     public static MealCatalog Load(string filePath)

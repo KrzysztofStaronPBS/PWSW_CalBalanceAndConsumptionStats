@@ -29,6 +29,11 @@ public abstract class Entry
         if (Date > DateTime.Now)
             throw new InvalidEntryException("Date cannot be in the future.");
     }
+	public override string ToString()
+	{
+		return $"{Type}: {Name} ({Calories} kcal) on {Date:yyyy-MM-dd}";
+	}
+
 }
 
 public class InvalidEntryException : Exception
