@@ -1,9 +1,9 @@
 {
   "profiles": {
-    "Win (Package)": {
+    "PWSW_CalBalanceAndConsumptionStats (Package)": {
       "commandName": "MsixPackage"
     },
-    "Win (Unpackaged)": {
+    "PWSW_CalBalanceAndConsumptionStats (Unpackaged)": {
       "commandName": "Project"
     }
   }

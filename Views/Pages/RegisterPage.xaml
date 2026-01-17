@@ -1,0 +1,78 @@
+<Page
+    x:Class="PWSW_CalBalanceAndConsumptionStats.Views.Pages.RegisterPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#FFF5F6F8">
+
+	<ScrollViewer>
+		<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="360" Margin="0,20">
+			<StackPanel>
+				<TextBlock Text="Zarejestruj nowe konto" FontSize="32" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Login" FontSize="15" FontWeight="SemiBold"/>
+					<TextBlock Text="Co najmniej 3 znaki, tylko litery i cyfry" FontSize="12" Foreground="Gray"/>
+					<TextBox Text="{x:Bind ViewModel.Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Twoja nazwa użytkownika"/>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Hasło" FontSize="15" FontWeight="SemiBold"/>
+					<PasswordBox x:Name="PasswordBox" PasswordChanged="PasswordBox_PasswordChanged" PlaceholderText="Min. 8 znaków"/>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Wiek" FontSize="15" FontWeight="SemiBold"/>
+					<TextBox Text="{x:Bind ViewModel.AgeText, Mode=TwoWay}" PlaceholderText="Od 1 do 120 lat"/>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Płeć" FontSize="15" FontWeight="SemiBold"/>
+					<ComboBox SelectedIndex="{x:Bind ViewModel.GenderIndex, Mode=TwoWay}" HorizontalAlignment="Stretch">
+						<ComboBoxItem Content="Wybierz płeć..." IsEnabled="False"/>
+						<ComboBoxItem Content="K - Kobieta"/>
+						<ComboBoxItem Content="M - Mężczyzna"/>
+					</ComboBox>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Wzrost (m)" FontSize="15" FontWeight="SemiBold"/>
+					<TextBox Text="{x:Bind ViewModel.HeightText, Mode=TwoWay}" PlaceholderText="np. 1.75"/>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Masa (kg)" FontSize="15" FontWeight="SemiBold"/>
+					<TextBox Text="{x:Bind ViewModel.WeightText, Mode=TwoWay}" PlaceholderText="Od 1 do 250 kg"/>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Cel" FontSize="15" FontWeight="SemiBold"/>
+					<ComboBox SelectedIndex="{x:Bind ViewModel.GoalTypeIndex, Mode=TwoWay}" HorizontalAlignment="Stretch">
+						<ComboBoxItem Content="Wybierz swój cel..." IsEnabled="False"/>
+						<ComboBoxItem Content="Chcę schudnąć"/>
+						<ComboBoxItem Content="Chcę utrzymać wagę"/>
+						<ComboBoxItem Content="Chcę przytyć"/>
+					</ComboBox>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0" Visibility="{x:Bind ViewModel.IsGoalValueVisible, Mode=OneWay}">
+					<TextBlock Text="Ile dziennie?" FontSize="15" FontWeight="SemiBold"/>
+					<StackPanel Orientation="Horizontal">
+						<TextBox Text="{x:Bind ViewModel.GoalValueText, Mode=TwoWay}" Width="150"/>
+						<TextBlock Text="kcal" VerticalAlignment="Center" Margin="10,0,0,0"/>
+					</StackPanel>
+				</StackPanel>
+
+				<Button Content="Utwórz konto" Click="Register_Click"
+                        Height="45" Margin="0,20,0,0" HorizontalAlignment="Stretch"
+                        Background="#FF26A69A" Foreground="White"/>
+
+				<Button Content="Anuluj / Powrót" Click="Cancel_Click"
+                        HorizontalAlignment="Center" Margin="0,10,0,0"
+                        Style="{StaticResource TextBlockButtonStyle}"/>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</Page>

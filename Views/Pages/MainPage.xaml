@@ -1,0 +1,71 @@
+<Page
+    x:Class="PWSW_CalBalanceAndConsumptionStats.Views.Pages.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+	<Grid Background="#FFF5F6F8" Padding="40">
+
+		<StackPanel VerticalAlignment="Top" HorizontalAlignment="Right">
+			<TextBlock Text="{x:Bind ViewModel.WelcomeMessage}" 
+                       Foreground="Gray" 
+                       HorizontalAlignment="Right"/>
+		</StackPanel>
+
+		<StackPanel Spacing="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+			<TextBlock Text="Menu główne"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+			<Button Content="Lista wpisów"
+                    Command="{x:Bind ViewModel.GoToEntriesCommand}"
+                    Height="40" Width="250"
+                    Background="#FF5C6BC0" Foreground="White"
+                    CornerRadius="4"/>
+
+			<Button Content="Posiłki"
+                    Command="{x:Bind ViewModel.GoToMealsCommand}"
+                    Height="40" Width="250"
+                    Background="#FF26A69A" Foreground="White"
+                    CornerRadius="4"/>
+
+			<Button Content="Aktywności fizyczne"
+                    Command="{x:Bind ViewModel.GoToActivitiesCommand}"
+                    Height="40" Width="250"
+                    Background="#FF78909C" Foreground="White"
+                    CornerRadius="4"/>
+
+			<Button Content="Podsumowanie dnia"
+                    Command="{x:Bind ViewModel.GoToDailySummaryCommand}"
+                    Height="40" Width="250"
+                    Background="#FF78909C" Foreground="White"
+                    CornerRadius="4"/>
+
+			<Button Content="Raporty"
+                    Command="{x:Bind ViewModel.GoToReportsCommand}"
+                    Height="40" Width="250"
+                    Background="#FF78909C" Foreground="White"
+                    CornerRadius="4"/>
+
+			<Button Content="Profil użytkownika"
+                    Command="{x:Bind ViewModel.GoToProfileCommand}"
+                    Height="40" Width="250"
+                    Background="#FFA1887F" Foreground="White"
+                    CornerRadius="4"/>
+
+			<Rectangle Height="1" Fill="LightGray" Width="200" Margin="0,10"/>
+
+			<Button Content="Wyloguj"
+                    Command="{x:Bind ViewModel.LogoutCommand}"
+                    Height="35" Width="150"
+                    Background="Transparent" Foreground="#FFD32F2F"
+                    BorderBrush="#FFD32F2F" BorderThickness="1"
+                    CornerRadius="4"/>
+		</StackPanel>
+	</Grid>
+</Page>

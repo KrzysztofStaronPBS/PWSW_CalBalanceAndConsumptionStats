@@ -1,0 +1,132 @@
+﻿using System;
+using System.Text.RegularExpressions;
+using CommunityToolkit.Mvvm.ComponentModel;
+using PWSW_CalBalanceAndConsumptionStats.Models;
+using PWSW_CalBalanceAndConsumptionStats.Services;
+using PWSW_CalBalanceAndConsumptionStats.Views.Pages; // Dla nawigacji
+
+namespace PWSW_CalBalanceAndConsumptionStats.ViewModels;
+
+public partial class RegisterViewModel : ObservableObject
+{
+	private readonly DataManager _dataManager;
+	private readonly NavigationService _navService;
+
+	public RegisterViewModel(DataManager dataManager, NavigationService navService)
+	{
+		_dataManager = dataManager;
+		_navService = navService;
+	}
+
+	[ObservableProperty] private string _login = string.Empty;
+	[ObservableProperty] private string _password = string.Empty;
+	[ObservableProperty] private string _ageText = string.Empty;
+	[ObservableProperty] private string _heightText = string.Empty;
+	[ObservableProperty] private string _weightText = string.Empty;
+	[ObservableProperty] private int _genderIndex = 0;
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(IsGoalValueVisible))]
+	private int _goalTypeIndex = 0;
+
+	[ObservableProperty] private string _goalValueText = string.Empty;
+
+	public bool IsGoalValueVisible => GoalTypeIndex == 1 || GoalTypeIndex == 3;
+
+	public (bool Success, string Message) RegisterUser()
+	{
+		// walidacja danych wejściowych
+		var validation = ValidateInput();
+		if (!validation.Success) return validation;
+
+		try
+		{
+			// sprawdzenie czy użytkownik już istnieje
+			if (_dataManager.HasUserData)
+				return (false, "Użytkownik już istnieje. Zresetuj dane w ustawieniach.");
+
+			// mapowanie i tworzenie modelu
+			var newUser = MapFieldsToUser();
+
+			// zapis (DataManager) i ustawienie sesji
+			_dataManager.SaveUserData(newUser);
+			_dataManager.CurrentUser = newUser;
+
+			// nawigacja do MainPage
+			_navService.Navigate<MainPage>();
+
+			return (true, "Konto utworzone pomyślnie.");
+		}
+		catch (Exception ex)
+		{
+			return (false, $"Błąd krytyczny zapisu: {ex.Message}");
+		}
+	}
+
+	private (bool Success, string Message) ValidateInput()
+	{
+		if (string.IsNullOrWhiteSpace(Login) || Login.Length < 3)
+			return (false, "Login musi mieć co najmniej 3 znaki.");
+
+		if (!Regex.IsMatch(Login, @"^[a-zA-Z0-9]+$"))
+			return (false, "Login może zawierać tylko litery i cyfry.");
+
+		if (string.IsNullOrWhiteSpace(Password) || Password.Length < 8)
+			return (false, "Hasło musi mieć co najmniej 8 znaków.");
+
+		if (!int.TryParse(AgeText, out int age) || age < 1 || age > 120)
+			return (false, "Wiek musi być liczbą (1-120).");
+
+		if (GenderIndex == 0)
+			return (false, "Wybierz płeć.");
+
+		// obsługa regionalna kropki/przecinka
+		string h = HeightText.Replace(',', '.');
+		string w = WeightText.Replace(',', '.');
+
+		if (!double.TryParse(h, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double height) || height <= 0 || height > 3)
+			return (false, "Wzrost musi być w metrach (np. 1.75).");
+
+		if (!double.TryParse(w, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double weight) || weight <= 0 || weight > 250)
+			return (false, "Waga musi być z zakresu 1-250 kg.");
+
+		if (GoalTypeIndex == 0)
+			return (false, "Wybierz cel.");
+
+		if (IsGoalValueVisible)
+		{
+			if (!int.TryParse(GoalValueText, out _))
+				return (false, "Podaj poprawną wartość kaloryczną celu.");
+		}
+
+		return (true, string.Empty);
+	}
+
+	private User MapFieldsToUser()
+	{
+		// dane są poprawne, bo metoda wywoływana po ValidateInput
+		int.TryParse(AgeText, out int age);
+		double.TryParse(HeightText.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double height);
+		double.TryParse(WeightText.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double weight);
+
+		int goalOffset = 0;
+		if (int.TryParse(GoalValueText, out int val))
+		{
+			goalOffset = (GoalTypeIndex == 1) ? -val : (GoalTypeIndex == 3 ? val : 0);
+		}
+
+		var user = new User
+		{
+			Id = 1,
+			Name = Login,
+			Password = Password,
+			Age = age,
+			Gender = GenderIndex == 1 ? "K" : "M",
+			Height = height,
+			Weight = weight,
+			GoalCalories = goalOffset
+		};
+		user.CalculateBMI();
+		return user;
+	}
+}

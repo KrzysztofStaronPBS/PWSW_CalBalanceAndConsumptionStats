@@ -1,45 +1,29 @@
 ﻿using System;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.Json;
 using System.Collections.Generic;
+
+namespace PWSW_CalBalanceAndConsumptionStats.Catalogs;
 
 public class ActivityCatalog
 {
-    public List<ActivityTemplate> Activities { get; set; } = new();
+	public ObservableCollection<ActivityTemplate> Activities { get; set; } = new();
 
 	public void AddTemplate(ActivityTemplate template)
 	{
 		if (string.IsNullOrWhiteSpace(template.Name))
-			throw new ArgumentException("Activity name cannot be empty.");
+			throw new ArgumentException("Nazwa aktywności nie może być pusta.");
 		if (template.MET <= 0)
-			throw new ArgumentException("MET must be greater than 0.");
-		if (Activities.Any(a => a.Name == template.Name))
-			throw new InvalidOperationException("Activity already exists.");
+			throw new ArgumentException("Wartość MET musi być większa od 0.");
+		if (Activities.Any(a => a.Name.Equals(template.Name, StringComparison.OrdinalIgnoreCase)))
+			throw new InvalidOperationException("Taka aktywność już istnieje w katalogu.");
 
 		Activities.Add(template);
 	}
 
 	public double GetMet(string name)
-    {
-        return Activities.FirstOrDefault(a => a.Name == name)?.MET
-            ?? throw new KeyNotFoundException("Activity not found.");
+	{
+		var activity = Activities.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+		return activity?.MET ?? throw new KeyNotFoundException($"Nie znaleziono aktywności: {name}");
 	}
-
-	public static ActivityCatalog Load(string filePath)
-    {
-        if (!File.Exists(filePath))
-            return new ActivityCatalog();
-
-        string json = File.ReadAllText(filePath);
-        return JsonSerializer.Deserialize<ActivityCatalog>(json) ?? new ActivityCatalog();
-    }
-
-    public void Save(string filePath)
-    {
-        string json = JsonSerializer.Serialize(this,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        File.WriteAllText(filePath, json);
-    }
 }

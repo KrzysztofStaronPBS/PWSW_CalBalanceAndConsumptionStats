@@ -1,207 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
+using Newtonsoft.Json;
+using PWSW_CalBalanceAndConsumptionStats.Models;
+
+namespace PWSW_CalBalanceAndConsumptionStats.Services;
 
 public class DataManager
 {
-	public string UserDirectory { get; }
-	public string UserFilePath => Path.Combine(UserDirectory, "userdata.json");
-	public string ActivitiesFilePath => Path.Combine(UserDirectory, "activities.json");
-	public string MealsFilePath => Path.Combine(UserDirectory, "meals.json");
-	public string TodayEntriesPath => Path.Combine(UserDirectory, "today-entries.json");
+	private readonly string _baseDir;
+	private readonly JsonSerializerSettings _settings;
 
-	public string EntriesDir => Path.Combine(UserDirectory, "entries");
-	public string DailiesDir => Path.Combine(UserDirectory, "dailies");
-	public string ReportsDir => Path.Combine(UserDirectory, "reports");
+	public string UserFilePath => Path.Combine(_baseDir, "userdata.json");
+	public string EntriesDir => Path.Combine(_baseDir, "entries");
+	public string ReportsDir => Path.Combine(_baseDir, "reports");
 
-	private readonly JsonSerializerOptions _options;
+	public bool HasUserData => File.Exists(UserFilePath);
+	public User? CurrentUser { get; set; }
 
-	public DataManager(string userDirectory)
+	public DataManager(string baseDir)
 	{
-		UserDirectory = userDirectory;
+		_baseDir = baseDir;
 
-		Directory.CreateDirectory(UserDirectory);
+		Directory.CreateDirectory(_baseDir);
 		Directory.CreateDirectory(EntriesDir);
-		Directory.CreateDirectory(DailiesDir);
 		Directory.CreateDirectory(ReportsDir);
 
-		_options = new JsonSerializerOptions
+		_settings = new JsonSerializerSettings
 		{
-			WriteIndented = true,
-			Converters = { new EntryConverter() }
+			Formatting = Formatting.Indented,
+			TypeNameHandling = TypeNameHandling.Auto,
+			NullValueHandling = NullValueHandling.Ignore,
+			DateFormatString = "yyyy-MM-dd"
 		};
 	}
 
-	// ---------------------------------------------------------
-	// USERDATA.JSON
-	// ---------------------------------------------------------
+	// user data
 
 	public void SaveUserData(User user)
 	{
-		File.WriteAllText(UserFilePath, JsonSerializer.Serialize(user, _options));
+		string json = JsonConvert.SerializeObject(user, _settings);
+		File.WriteAllText(UserFilePath, json);
 	}
 
 	public User LoadUserData()
 	{
-		if (!File.Exists(UserFilePath))
-			return new User();
-
-		return JsonSerializer.Deserialize<User>(File.ReadAllText(UserFilePath), _options)
-			   ?? new User();
-	}
-
-	// ---------------------------------------------------------
-	// ACTIVITIES.JSON
-	// ---------------------------------------------------------
-
-	public void SaveActivities(ActivityCatalog catalog)
-	{
-		File.WriteAllText(ActivitiesFilePath, JsonSerializer.Serialize(catalog, _options));
-	}
-
-	public ActivityCatalog LoadActivities()
-	{
-		if (!File.Exists(ActivitiesFilePath))
-			return new ActivityCatalog();
-
-		return JsonSerializer.Deserialize<ActivityCatalog>(File.ReadAllText(ActivitiesFilePath), _options)
-			   ?? new ActivityCatalog();
-	}
-
-	// ---------------------------------------------------------
-	// MEALS.JSON
-	// ---------------------------------------------------------
-
-	public void SaveMeals(MealCatalog catalog)
-	{
-		File.WriteAllText(MealsFilePath, JsonSerializer.Serialize(catalog, _options));
-	}
-
-	public MealCatalog LoadMeals()
-	{
-		if (!File.Exists(MealsFilePath))
-			return new MealCatalog();
-
-		return JsonSerializer.Deserialize<MealCatalog>(File.ReadAllText(MealsFilePath), _options)
-			   ?? new MealCatalog();
-	}
-
-	// ---------------------------------------------------------
-	// TODAY-ENTRIES.JSON
-	// ---------------------------------------------------------
-
-	public void SaveTodayEntries(List<Entry> entries)
-	{
-		var wrapper = new TodayEntriesWrapper
+		if (!File.Exists(UserFilePath)) return new User();
+		try
 		{
-			Date = DateTime.Today,
-			Entries = entries
-		};
-
-		File.WriteAllText(TodayEntriesPath, JsonSerializer.Serialize(wrapper, _options));
-	}
-
-	public List<Entry> LoadTodayEntries()
-	{
-		if (!File.Exists(TodayEntriesPath))
-		{
-			SaveTodayEntries(new List<Entry>());
-			return new List<Entry>();
+			string json = File.ReadAllText(UserFilePath);
+			return JsonConvert.DeserializeObject<User>(json, _settings) ?? new User();
 		}
-
-		var wrapper = JsonSerializer.Deserialize<TodayEntriesWrapper>(File.ReadAllText(TodayEntriesPath), _options);
-
-		if (wrapper == null || wrapper.Date.Date != DateTime.Today)
-		{
-			// przeniesienie starego pliku do entries/
-			string oldPath = Path.Combine(EntriesDir, $"entries-{wrapper?.Date:yyyy-MM-dd}.json");
-			File.WriteAllText(oldPath, JsonSerializer.Serialize(wrapper, _options));
-
-			// reset today-entries.json
-			SaveTodayEntries(new List<Entry>());
-			return new List<Entry>();
-		}
-
-		return wrapper.Entries ?? new List<Entry>();
+		catch (JsonException) { return new User(); }
 	}
 
-	// ---------------------------------------------------------
-	// ENTRIES/YYYY-MM-DD.JSON
-	// ---------------------------------------------------------
+	// entries
 
-	public void SaveEntries(List<Entry> entries, DateTime date)
+	public void SaveEntries(DateTime date, List<Entry> entries)
 	{
-		string path = Path.Combine(EntriesDir, $"entries-{date:yyyy-MM-dd}.json");
+		string fileName = $"entries-{date:yyyy-MM-dd}.json";
+		string path = Path.Combine(EntriesDir, fileName);
 
-		var wrapper = new TodayEntriesWrapper
-		{
-			Date = date,
-			Entries = entries
-		};
-
-		File.WriteAllText(path, JsonSerializer.Serialize(wrapper, _options));
+		string json = JsonConvert.SerializeObject(entries, _settings);
+		File.WriteAllText(path, json);
 	}
 
 	public List<Entry> LoadEntries(DateTime date)
 	{
-		string path = Path.Combine(EntriesDir, $"entries-{date:yyyy-MM-dd}.json");
+		string fileName = $"entries-{date:yyyy-MM-dd}.json";
+		string path = Path.Combine(EntriesDir, fileName);
 
-		if (!File.Exists(path))
+		if (!File.Exists(path)) return new List<Entry>();
+
+		try
+		{
+			string json = File.ReadAllText(path);
+			return JsonConvert.DeserializeObject<List<Entry>>(json, _settings) ?? new List<Entry>();
+		}
+		catch (JsonException)
+		{
 			return new List<Entry>();
-
-		var wrapper = JsonSerializer.Deserialize<TodayEntriesWrapper>(File.ReadAllText(path), _options);
-		return wrapper?.Entries ?? new List<Entry>();
+		}
 	}
 
-	// ---------------------------------------------------------
-	// DAILIES/YYYY-MM-DD.JSON
-	// ---------------------------------------------------------
+	// zarządzanie kontem
 
-	public void SaveDailySummary(DailySummary summary)
+	public void DeleteAccount()
 	{
-		string path = Path.Combine(DailiesDir, $"daily-{summary.Date:yyyy-MM-dd}.json");
-		File.WriteAllText(path, JsonSerializer.Serialize(summary, _options));
+		// usunięcie głównego pliku usera
+		if (File.Exists(UserFilePath)) File.Delete(UserFilePath);
+
+		// rekurencyjne usunięcie danych
+		if (Directory.Exists(EntriesDir)) Directory.Delete(EntriesDir, true);
+		if (Directory.Exists(ReportsDir)) Directory.Delete(ReportsDir, true);
+
+		// re-inicjalizacja pustych katalogów
+		Directory.CreateDirectory(EntriesDir);
+		Directory.CreateDirectory(ReportsDir);
+
+		CurrentUser = null;
 	}
-
-	public DailySummary LoadDailySummary(DateTime date)
-	{
-		string path = Path.Combine(DailiesDir, $"daily-{date:yyyy-MM-dd}.json");
-
-		if (!File.Exists(path))
-			return new DailySummary { Date = date };
-
-		return JsonSerializer.Deserialize<DailySummary>(File.ReadAllText(path), _options)
-			   ?? new DailySummary { Date = date };
-	}
-
-	// ---------------------------------------------------------
-	// REPORTS/YYYYMMDD-YYYYMMDD.JSON
-	// ---------------------------------------------------------
-
-	public void SaveReport(Report report)
-	{
-		string path = Path.Combine(ReportsDir,
-			$"report-{report.StartDate:yyyyMMdd}-{report.EndDate:yyyyMMdd}.json");
-
-		File.WriteAllText(path, JsonSerializer.Serialize(report, _options));
-	}
-
-	public Report LoadReport(DateTime start, DateTime end)
-	{
-		string path = Path.Combine(ReportsDir,
-			$"report-{start:yyyyMMdd}-{end:yyyyMMdd}.json");
-
-		if (!File.Exists(path))
-			return new Report { StartDate = start, EndDate = end };
-
-		return JsonSerializer.Deserialize<Report>(File.ReadAllText(path), _options)
-			   ?? new Report { StartDate = start, EndDate = end };
-	}
-}
-
-public class TodayEntriesWrapper
-{
-	public DateTime Date { get; set; }
-	public List<Entry> Entries { get; set; } = new();
 }

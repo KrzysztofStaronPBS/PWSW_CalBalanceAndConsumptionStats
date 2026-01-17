@@ -1,46 +1,30 @@
 ﻿using System;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.Json;
 using System.Collections.Generic;
+
+namespace PWSW_CalBalanceAndConsumptionStats.Catalogs;
 
 public class MealCatalog
 {
-    public List<MealTemplate> Meals { get; set; } = new();
+	// ObservableCollection dla automatycznego powiadamiania UI
+	public ObservableCollection<MealTemplate> Meals { get; set; } = new();
 
 	public void AddTemplate(MealTemplate template)
 	{
 		if (string.IsNullOrWhiteSpace(template.Name))
-			throw new ArgumentException("Meal name cannot be empty.");
+			throw new ArgumentException("Nazwa posiłku nie może być pusta.");
 		if (template.CaloriesPerPortion <= 0)
-			throw new ArgumentException("Calories must be greater than 0.");
-		if (Meals.Any(a => a.Name == template.Name))
-			throw new InvalidOperationException("Meal already exists.");
-
+			throw new ArgumentException("Liczba kalorii musi być większa od 0.");
+		if (Meals.Any(m => m.Name.Equals(template.Name, StringComparison.OrdinalIgnoreCase)))
+			throw new InvalidOperationException("Taki posiłek już istnieje w katalogu.");
 
 		Meals.Add(template);
 	}
 
-	public int GetCalories(string name)
-    {
-        return Meals.FirstOrDefault(m => m.Name == name)?.CaloriesPerPortion
-            ?? throw new KeyNotFoundException("Meal not found.");
-    }
-
-    public static MealCatalog Load(string filePath)
-    {
-        if (!File.Exists(filePath))
-            return new MealCatalog();
-
-        string json = File.ReadAllText(filePath);
-        return JsonSerializer.Deserialize<MealCatalog>(json) ?? new MealCatalog();
-    }
-
-    public void Save(string filePath)
-    {
-        string json = JsonSerializer.Serialize(this,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        File.WriteAllText(filePath, json);
-    }
+	public double GetCalories(string name)
+	{
+		var meal = Meals.FirstOrDefault(m => m.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+		return meal?.CaloriesPerPortion ?? throw new KeyNotFoundException($"Nie znaleziono posiłku: {name}");
+	}
 }

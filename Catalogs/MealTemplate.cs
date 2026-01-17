@@ -1,5 +1,7 @@
-﻿public class MealTemplate
+﻿namespace PWSW_CalBalanceAndConsumptionStats.Catalogs;
+
+public class MealTemplate
 {
-    public string? Name { get; set; }
-    public int CaloriesPerPortion { get; set; }
+	public string Name { get; set; } = string.Empty;
+	public double CaloriesPerPortion { get; set; }
 }
