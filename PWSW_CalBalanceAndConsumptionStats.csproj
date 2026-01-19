@@ -14,8 +14,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Views\Pages\EntriesPage.xaml" />
     <None Remove="Views\Pages\LoginPage.xaml" />
     <None Remove="Views\Pages\MainPage.xaml" />
+    <None Remove="Views\Pages\ProfilePage.xaml" />
     <None Remove="Views\Pages\RegisterPage.xaml" />
   </ItemGroup>
 
@@ -48,6 +50,16 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7463" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Pages\EntriesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Pages\ProfilePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Pages\MainPage.xaml">

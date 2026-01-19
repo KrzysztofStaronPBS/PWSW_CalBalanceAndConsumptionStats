@@ -62,6 +62,9 @@ namespace PWSW_CalBalanceAndConsumptionStats
 			services.AddSingleton<MealCatalog>();
 			services.AddSingleton<ActivityCatalog>();
 
+			services.AddTransient<ProfileViewModel>();
+			services.AddTransient<EntriesViewModel>();
+
 			return services.BuildServiceProvider();
 		}
 

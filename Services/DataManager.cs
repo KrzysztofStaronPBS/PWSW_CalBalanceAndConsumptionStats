@@ -35,6 +35,8 @@ public class DataManager
 		};
 	}
 
+
+
 	// user data
 
 	public void SaveUserData(User user)
@@ -53,6 +55,8 @@ public class DataManager
 		}
 		catch (JsonException) { return new User(); }
 	}
+
+
 
 	// entries
 
@@ -82,6 +86,37 @@ public class DataManager
 			return new List<Entry>();
 		}
 	}
+
+	public List<Entry> GetAllEntries()
+	{
+		var allEntries = new List<Entry>();
+
+		if (!Directory.Exists(EntriesDir)) return allEntries;
+
+		// pobieranie wszystkich plików pasujących do wzorca
+		string[] files = Directory.GetFiles(EntriesDir, "entries-*.json");
+
+		foreach (var file in files)
+		{
+			try
+			{
+				string json = File.ReadAllText(file);
+				var dayEntries = JsonConvert.DeserializeObject<List<Entry>>(json, _settings);
+				if (dayEntries != null)
+				{
+					allEntries.AddRange(dayEntries);
+				}
+			}
+			catch (JsonException)
+			{
+				continue;
+			}
+		}
+
+		return allEntries;
+	}
+
+
 
 	// zarządzanie kontem
 

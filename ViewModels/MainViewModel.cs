@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PWSW_CalBalanceAndConsumptionStats.Services;
+using PWSW_CalBalanceAndConsumptionStats.Views.Pages;
 
 namespace PWSW_CalBalanceAndConsumptionStats.ViewModels;
 
@@ -9,7 +10,6 @@ public partial class MainViewModel : ObservableObject
 	private readonly NavigationService _navService;
 	private readonly DataManager _dataManager;
 
-	// powitanie
 	[ObservableProperty]
 	private string _welcomeMessage = "Witaj!";
 
@@ -24,47 +24,61 @@ public partial class MainViewModel : ObservableObject
 		}
 	}
 
+	// wyświetl wpisy (Lista wpisów - historia)
 	[RelayCommand]
-	private void GoToEntries()
+	private void ShowEntries()
 	{
-		// _navService.Navigate<Views.Pages.EntriesPage>();
+		 _navService.Navigate<PWSW_CalBalanceAndConsumptionStats.Views.Pages.EntriesPage>();
 	}
 
+	// dodaj wpis (logowanie konsumpcji/sportu z dzisiaj)
+	// to tutaj użytkownik wybierze z listy co zjadł lub wykonał ćwiczenie i to zapisze.
 	[RelayCommand]
-	private void GoToMeals()
+	private void AddEntry()
 	{
-		// _navService.Navigate<Views.Pages.MealsPage>();
+		// _navService.Navigate<AddEntryPage>();
 	}
 
+	// dodaj nowy posiłek lub aktywność (Rozbudowa bazy danych/Katalogu)
 	[RelayCommand]
-	private void GoToReports()
+	private void AddNewMeal()
 	{
-		// _navService.Navigate<Views.Pages.ReportsPage>();
+		// _navService.Navigate<MealsCatalogPage>(); 
+		// lub MealsPage z parametrem trybu edycji
 	}
 
+	// dodaj nową aktywność fizyczną (Rozbudowa bazy danych/Katalogu)
 	[RelayCommand]
-	private void GoToDailySummary()
+	private void AddNewActivity()
 	{
-		// _navService.Navigate<Views.Pages.DailySummaryPage>();
+		// _navService.Navigate<ActivitiesCatalogPage>();
 	}
 
+	// generuj raport
 	[RelayCommand]
-	private void GoToActivities()
+	private void GenerateReport()
 	{
-		// _navService.Navigate<Views.Pages.ActivitiesPage>();
+		// _navService.Navigate<ReportsPage>();
 	}
 
+	// podsumowanie dnia (Licznik kalorii, wykresy dzienne)
 	[RelayCommand]
-	private void GoToProfile()
+	private void ShowDailySummary()
 	{
-		// _navService.Navigate<Views.Pages.UserProfilePage>();
+		// _navService.Navigate<DailySummaryPage>();
+	}
+
+	// profil usera
+	[RelayCommand]
+	private void EditProfile()
+	{
+		_navService.Navigate<PWSW_CalBalanceAndConsumptionStats.Views.Pages.ProfilePage>();
 	}
 
 	[RelayCommand]
 	private void Logout()
 	{
-		// czyszczenie sesji
 		_dataManager.CurrentUser = null;
-		_navService.Navigate<Views.Pages.LoginPage>();
+		_navService.Navigate<PWSW_CalBalanceAndConsumptionStats.Views.Pages.LoginPage>();
 	}
 }

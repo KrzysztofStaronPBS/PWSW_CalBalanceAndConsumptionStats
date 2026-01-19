@@ -20,7 +20,7 @@ public class User
 
 	public void CalculateBMI()
 	{
-		if (Height > 0) BMI = Weight / (Height * Height);
+		if (Height > 0) Math.Round(BMI = Weight / (Height * Height), 2);
 	}
 
 	public void Validate()
