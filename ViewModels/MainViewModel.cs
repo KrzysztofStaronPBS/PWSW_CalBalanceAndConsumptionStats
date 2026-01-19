@@ -31,27 +31,11 @@ public partial class MainViewModel : ObservableObject
 		 _navService.Navigate<PWSW_CalBalanceAndConsumptionStats.Views.Pages.EntriesPage>();
 	}
 
-	// dodaj wpis (logowanie konsumpcji/sportu z dzisiaj)
-	// to tutaj użytkownik wybierze z listy co zjadł lub wykonał ćwiczenie i to zapisze.
-	[RelayCommand]
-	private void AddEntry()
-	{
-		// _navService.Navigate<AddEntryPage>();
-	}
-
 	// dodaj nowy posiłek lub aktywność (Rozbudowa bazy danych/Katalogu)
 	[RelayCommand]
-	private void AddNewMeal()
+	private void NavigateToCatalog()
 	{
-		// _navService.Navigate<MealsCatalogPage>(); 
-		// lub MealsPage z parametrem trybu edycji
-	}
-
-	// dodaj nową aktywność fizyczną (Rozbudowa bazy danych/Katalogu)
-	[RelayCommand]
-	private void AddNewActivity()
-	{
-		// _navService.Navigate<ActivitiesCatalogPage>();
+		// _navService.Navigate<MealsCatalogPage>();
 	}
 
 	// generuj raport

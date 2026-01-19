@@ -7,71 +7,35 @@
     mc:Ignorable="d">
 
 	<Grid Background="#FFF5F6F8" Padding="40">
-
 		<StackPanel VerticalAlignment="Top" HorizontalAlignment="Right">
-			<TextBlock Text="{x:Bind ViewModel.WelcomeMessage}" 
-                       Foreground="Gray" 
-                       HorizontalAlignment="Right"/>
+			<TextBlock Text="{x:Bind ViewModel.WelcomeMessage}" Foreground="Gray" FontWeight="Medium"/>
 		</StackPanel>
 
-		<StackPanel Spacing="15" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<StackPanel Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<TextBlock Text="Menu Główne" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-			<TextBlock Text="Menu główne"
-                       FontSize="32"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,15"/>
-
-			<Button Content="Wyświetl wpisy"
-                    Command="{x:Bind ViewModel.ShowEntriesCommand}"
-                    Height="40" Width="280"
-                    Background="#FF5C6BC0" Foreground="White"
-                    CornerRadius="4"/>
-
-			<Button Content="Dodaj wpis"
-                    Command="{x:Bind ViewModel.AddEntryCommand}"
-                    Height="40" Width="280"
-                    Background="#FF26A69A" Foreground="White"
-                    CornerRadius="4"/>
-
-			<Button Content="Dodaj nowy posiłek"
-                    Command="{x:Bind ViewModel.AddNewMealCommand}"
-                    Height="40" Width="280"
-                    Background="#FF4DB6AC" Foreground="White"
-                    CornerRadius="4"/>
-
-			<Button Content="Dodaj nową aktywność fizyczną"
-                    Command="{x:Bind ViewModel.AddNewActivityCommand}"
-                    Height="40" Width="280"
-                    Background="#FF4DB6AC" Foreground="White"
-                    CornerRadius="4"/>
-
-			<Button Content="Generuj raport"
-                    Command="{x:Bind ViewModel.GenerateReportCommand}"
-                    Height="40" Width="280"
-                    Background="#FF5C6BC0" Foreground="White"
-                    CornerRadius="4"/>
-
-			<Button Content="Podsumowanie dnia"
-                    Command="{x:Bind ViewModel.ShowDailySummaryCommand}"
-                    Height="40" Width="280"
-                    Background="#FF5C6BC0" Foreground="White"
-                    CornerRadius="4"/>
-
-			<Button Content="Profil użytkownika"
-                    Command="{x:Bind ViewModel.EditProfileCommand}"
-                    Height="40" Width="280"
-                    Background="#FFA1887F" Foreground="White"
-                    CornerRadius="4"/>
+			<Button Content="Dziennik i Historia" Command="{x:Bind ViewModel.ShowEntriesCommand}" 
+                    Height="40" Width="300" Background="#FF5C6BC0" Foreground="White" CornerRadius="4"/>
 
 			<Rectangle Height="1" Fill="LightGray" Width="200" Margin="0,10"/>
 
-			<Button Content="Wyloguj"
-                    Command="{x:Bind ViewModel.LogoutCommand}"
-                    Height="35" Width="150"
-                    Background="Transparent" Foreground="#FFD32F2F"
-                    BorderBrush="#FFD32F2F" BorderThickness="1"
-                    CornerRadius="4"/>
+			<Button Content="Katalog Posiłków i Aktywności" Command="{x:Bind ViewModel.NavigateToCatalogCommand}" 
+                    Height="40" Width="300" Background="#FF4DB6AC" Foreground="White" CornerRadius="4"/>
+
+			<Button Content="Podsumowanie dnia" Command="{x:Bind ViewModel.ShowDailySummaryCommand}" 
+                    Height="40" Width="300" Background="#FF7986CB" Foreground="White" CornerRadius="4"/>
+
+			<Button Content="Raporty okresowe" Command="{x:Bind ViewModel.GenerateReportCommand}" 
+                    Height="40" Width="300" Background="#FF9FA8DA" Foreground="White" CornerRadius="4"/>
+
+			<Rectangle Height="1" Fill="LightGray" Width="200" Margin="0,10"/>
+
+			<Button Content="Profil użytkownika" Command="{x:Bind ViewModel.EditProfileCommand}" 
+                    Height="35" Width="300" Background="#FFA1887F" Foreground="White" CornerRadius="4"/>
+
+			<Button Content="Wyloguj" Command="{x:Bind ViewModel.LogoutCommand}" 
+                    Margin="0,10,0,0" Height="35" Width="120" Background="Transparent" 
+                    Foreground="#FFD32F2F" BorderBrush="#FFD32F2F" BorderThickness="1" CornerRadius="4"/>
 		</StackPanel>
 	</Grid>
 </Page>

@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<Grid Background="#FFF5F6F8">
+	<Grid Background="#FFF5F6F8" KeyDown="OnKeyDown">
 		<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="360">
 
 			<StackPanel>
