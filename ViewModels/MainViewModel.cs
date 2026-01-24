@@ -56,7 +56,7 @@ public partial class MainViewModel : ObservableObject
 
 	[RelayCommand] private void ShowEntries() => _navService.Navigate<EntriesPage>();
 	[RelayCommand] private void NavigateToCatalog() => _navService.Navigate<CatalogEditorPage>();
-	[RelayCommand] private void GenerateReport() { /* TODO */ }
+	[RelayCommand] private void GenerateReport() { _navService.Navigate<ReportsPage>(); }
 	[RelayCommand] private void EditProfile() => _navService.Navigate<ProfilePage>();
 
 	[RelayCommand]

@@ -72,6 +72,7 @@ namespace PWSW_CalBalanceAndConsumptionStats
 			services.AddTransient<EntriesViewModel>();
 			services.AddTransient<CatalogEditorViewModel>();
 			services.AddTransient<AddEntryViewModel>();
+			services.AddTransient<ReportsViewModel>();
 
 			return services.BuildServiceProvider();
 		}

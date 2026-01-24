@@ -315,4 +315,40 @@ public class DataManager
 		string json = JsonConvert.SerializeObject(templates, _settings);
 		File.WriteAllText(ActivityTemplatesPath, json);
 	}
+
+	// daily summary
+
+	public void SaveDailySummary(DailySummary summary)
+	{
+		string fileName = $"daily-{summary.Date:yyyy-MM-dd}.json";
+		string path = Path.Combine(DailiesDir, fileName);
+
+		string json = JsonConvert.SerializeObject(summary, _settings);
+		File.WriteAllText(path, json);
+	}
+
+	public void RecalculateDailySummary(DateTime date)
+	{
+		// pobieranie surowych wpisów dla danego dnia
+		var entries = LoadEntries(date);
+
+		// obliczanie statystyk
+		double totalEaten = entries.OfType<Meal>().Sum(m => m.Calories);
+		double totalBurned = entries.OfType<Activity>().Sum(a => a.Calories);
+
+		// 3. tworzenie obiektu podsumowania
+		var summary = new DailySummary
+		{
+			Date = date,
+			TotalEaten = totalEaten,
+			TotalBurned = totalBurned
+		};
+
+		// zapisanie / nadpisanie pliku w folderze dailies
+		string fileName = $"daily-{date:yyyy-MM-dd}.json";
+		string path = Path.Combine(DailiesDir, fileName);
+
+		string json = JsonConvert.SerializeObject(summary, _settings);
+		File.WriteAllText(path, json);
+	}
 }
