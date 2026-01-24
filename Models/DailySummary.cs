@@ -13,7 +13,7 @@ public class DailySummary
 
 	public void Calculate(IEnumerable<Entry> entries)
 	{
-		var dayEntries = entries.Where(e => e.Date.Date == Date.Date).ToList();
+		var dayEntries = entries.Where(e => e.DateTime.Date == Date.Date).ToList();
 		TotalEaten = dayEntries.OfType<Meal>().Sum(m => m.Calories);
 		TotalBurned = dayEntries.OfType<Activity>().Sum(a => a.Calories);
 	}

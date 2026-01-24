@@ -20,14 +20,31 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,20">
-			<Button Command="{x:Bind ViewModel.GoBackCommand}" 
-                    Content="&#xE72B;" 
-                    FontFamily="Segoe MDL2 Assets" 
-                    Width="40" Height="40"
-                    ToolTipService.ToolTip="Powrót do menu"/>
-			<TextBlock Text="Historia aktywności i posiłków" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
-		</StackPanel>
+		<Grid Grid.Row="0" Margin="0,0,0,20">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<StackPanel Orientation="Horizontal" Spacing="15">
+				<Button Command="{x:Bind ViewModel.GoBackCommand}" 
+                        Content="&#xE72B;" 
+                        FontFamily="Segoe MDL2 Assets" 
+                        Width="40" Height="40"
+                        ToolTipService.ToolTip="Powrót do menu"/>
+				<TextBlock Text="Historia aktywności i posiłków" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
+			</StackPanel>
+
+			<Button Grid.Column="1" 
+                    Command="{x:Bind ViewModel.GoToAddEntryCommand}"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Padding="15,0,15,0" Height="40">
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<FontIcon Glyph="&#xE109;" FontFamily="Segoe MDL2 Assets" FontSize="16"/>
+					<TextBlock Text="Dodaj wpis"/>
+				</StackPanel>
+			</Button>
+		</Grid>
 
 		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
 			<CalendarDatePicker Date="{x:Bind ViewModel.SelectedDateFilter, Mode=TwoWay}" 
@@ -48,9 +65,9 @@
 		</StackPanel>
 
 		<ListView Grid.Row="2" 
-				ItemsSource="{x:Bind ViewModel.FilteredEntries, Mode=OneWay}" 
-				SelectionMode="None"
-				Visibility="{x:Bind ViewModel.FilteredEntries.Count, Mode=OneWay, Converter={StaticResource ListVisibilityConverter}}">
+                ItemsSource="{x:Bind ViewModel.FilteredEntries, Mode=OneWay}" 
+                SelectionMode="None"
+                Visibility="{x:Bind ViewModel.HasEntries, Mode=OneWay, Converter={StaticResource ListVisibilityConverter}}">
 			<ListView.ItemTemplate>
 				<DataTemplate x:DataType="models:Entry">
 					<Grid Padding="12" BorderThickness="0,0,0,1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
@@ -61,12 +78,12 @@
 							<ColumnDefinition Width="40"/>
 						</Grid.ColumnDefinitions>
 
-						<TextBlock Text="{x:Bind Date, Converter={StaticResource StringFormatConverter}, ConverterParameter='HH:mm'}" 
+						<TextBlock Text="{x:Bind DateTime, Converter={StaticResource StringFormatConverter}, ConverterParameter='HH:mm'}" 
                                    VerticalAlignment="Center" Foreground="Gray"/>
 
 						<StackPanel Grid.Column="1" VerticalAlignment="Center">
 							<TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" FontSize="16"/>
-							<TextBlock Text="{x:Bind Date, Converter={StaticResource StringFormatConverter}, ConverterParameter='dd.MM.yyyy'}" 
+							<TextBlock Text="{x:Bind DateTime, Converter={StaticResource StringFormatConverter}, ConverterParameter='dd.MM.yyyy'}" 
                                        FontSize="12" Foreground="Gray"/>
 						</StackPanel>
 
@@ -85,12 +102,12 @@
 		</ListView>
 
 		<StackPanel Grid.Row="2" 
-					VerticalAlignment="Center" 
-					HorizontalAlignment="Center"
-					Visibility="{x:Bind ViewModel.FilteredEntries.Count, Mode=OneWay, Converter={StaticResource PlaceholderVisibilityConverter}}">
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Visibility="{x:Bind ViewModel.HasEntries, Mode=OneWay, Converter={StaticResource PlaceholderVisibilityConverter}}">
 			<FontIcon Glyph="&#xE9CE;" FontSize="48" Foreground="LightGray" FontFamily="Segoe MDL2 Assets"/>
 			<TextBlock Text="Brak wpisów dla wybranych filtrów" 
-					Foreground="Gray" Margin="0,10,0,0"/>
+                    Foreground="Gray" Margin="0,10,0,0"/>
 		</StackPanel>
 	</Grid>
 </Page>

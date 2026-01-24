@@ -44,7 +44,7 @@ public class DataManager
 			Formatting = Formatting.Indented,
 			TypeNameHandling = TypeNameHandling.Auto,
 			NullValueHandling = NullValueHandling.Ignore,
-			DateFormatString = "yyyy-MM-dd"
+			DateFormatString = "yyyy-MM-ddTHH:mm:ss"
 		};
 	}
 
@@ -142,6 +142,13 @@ public class DataManager
 		catch (JsonException) { return new User(); }
 	}
 
+	public void DeleteAccount()
+	{
+		if (CurrentUser == null || !Directory.Exists(UserRoot)) return;
+		Directory.Delete(UserRoot, true);
+		CurrentUser = null;
+	}
+
 
 
 	// entries
@@ -177,30 +184,81 @@ public class DataManager
 	{
 		var allEntries = new List<Entry>();
 
-		if (!Directory.Exists(EntriesDir)) return allEntries;
-
-		// pobieranie wszystkich plików pasujących do wzorca
-		string[] files = Directory.GetFiles(EntriesDir, "entries-*.json");
-
-		foreach (var file in files)
+		// dodawanie wpisów z dzisiaj (today-entries.json)
+		if (File.Exists(TodayEntriesPath))
 		{
 			try
 			{
-				string json = File.ReadAllText(file);
-				var dayEntries = JsonConvert.DeserializeObject<List<Entry>>(json, _settings);
-				if (dayEntries != null)
-				{
-					allEntries.AddRange(dayEntries);
-				}
+				string json = File.ReadAllText(TodayEntriesPath);
+				var today = JsonConvert.DeserializeObject<List<Entry>>(json, _settings);
+				if (today != null) allEntries.AddRange(today);
 			}
-			catch (JsonException)
+			catch { /* log error */ }
+		}
+
+		// 2. dodawanie wpisów z archiwum (/entries/entries-*.json)
+		if (Directory.Exists(EntriesDir))
+		{
+			var files = Directory.GetFiles(EntriesDir, "entries-*.json");
+			foreach (var file in files)
 			{
-				continue;
+				try
+				{
+					string json = File.ReadAllText(file);
+					var archived = JsonConvert.DeserializeObject<List<Entry>>(json, _settings);
+					if (archived != null) allEntries.AddRange(archived);
+				}
+				catch { continue; }
 			}
 		}
 
 		return allEntries;
 	}
+
+	public List<Entry> GetTodayEntries()
+	{
+		if (!File.Exists(TodayEntriesPath)) return new List<Entry>();
+		try
+		{
+			string json = File.ReadAllText(TodayEntriesPath);
+			return JsonConvert.DeserializeObject<List<Entry>>(json, _settings) ?? new List<Entry>();
+		}
+		catch { return new List<Entry>(); }
+	}
+
+	public void AddEntryToToday(Entry entry)
+	{
+		if (CurrentUser == null) throw new InvalidOperationException("Sesja nieaktywna.");
+
+		var entries = GetTodayEntries();
+
+		entry.Id = entries.Any() ? entries.Max(e => e.Id) + 1 : 1;
+
+		entry.DateTime = DateTime.Now;
+
+		entries.Add(entry);
+
+		string json = JsonConvert.SerializeObject(entries, _settings);
+		File.WriteAllText(TodayEntriesPath, json);
+	}
+
+	public void ArchiveTodayEntries()
+	{
+		if (!File.Exists(TodayEntriesPath)) return;
+
+		var entries = GetTodayEntries();
+		if (!entries.Any()) return;
+
+		// pobranie daty z pierwszego wpisu (pole Date) lub dzisiejszą
+		DateTime archiveDate = entries.FirstOrDefault()?.DateTime.Date ?? DateTime.Today;
+
+		// zapis do pliku entries-yyyy-MM-dd.json w folderze /entries/
+		SaveEntries(archiveDate, entries);
+
+		// czyszczenie pliku dzisiejszego
+		File.WriteAllText(TodayEntriesPath, JsonConvert.SerializeObject(new List<Entry>(), _settings));
+	}
+
 
 
 	// meals
@@ -256,16 +314,5 @@ public class DataManager
 
 		string json = JsonConvert.SerializeObject(templates, _settings);
 		File.WriteAllText(ActivityTemplatesPath, json);
-	}
-
-
-
-	// zarządzanie kontem
-
-	public void DeleteAccount()
-	{
-		if (CurrentUser == null || !Directory.Exists(UserRoot)) return;
-		Directory.Delete(UserRoot, true);
-		CurrentUser = null;
 	}
 }

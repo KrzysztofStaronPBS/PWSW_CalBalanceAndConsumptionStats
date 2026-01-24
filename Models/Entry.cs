@@ -10,7 +10,7 @@ public abstract class Entry
 	public int Id { get; set; }
 	public string Name { get; set; } = string.Empty;
 	public double Calories { get; set; }
-	public DateTime Date { get; set; }
+	public DateTime DateTime { get; set; }
 
 	public abstract EntryType Type { get; }
 
@@ -18,10 +18,10 @@ public abstract class Entry
 	{
 		if (Id < 0) throw new InvalidEntryException("Id nie może być ujemne.");
 		if (string.IsNullOrWhiteSpace(Name)) throw new InvalidEntryException("Nazwa nie może być pusta.");
-		if (Date > DateTime.Now) throw new InvalidEntryException("Data nie może być z przyszłości.");
+		if (DateTime > DateTime.Now) throw new InvalidEntryException("Data nie może być z przyszłości.");
 	}
 
-	public override string ToString() => $"{Type}: {Name} ({Calories:F1} kcal) - {Date:yyyy-MM-dd}";
+	public override string ToString() => $"{Type}: {Name} ({Calories:F1} kcal) - {DateTime:yyyy-MM-dd}";
 }
 
 public class InvalidEntryException : Exception

@@ -1,0 +1,69 @@
+<Page
+    x:Class="PWSW_CalBalanceAndConsumptionStats.Views.Pages.AddEntryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:templates="using:PWSW_CalBalanceAndConsumptionStats.Catalogs">
+
+	<Grid Padding="40">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<StackPanel Orientation="Horizontal" Spacing="15" Margin="0,0,0,20">
+			<Button Command="{x:Bind ViewModel.CancelCommand}" Content="&#xE72B;" FontFamily="Segoe MDL2 Assets" Width="40" Height="40"/>
+			<TextBlock Text="Dodaj nowy wpis" FontSize="28" FontWeight="Bold" VerticalAlignment="Center"/>
+		</StackPanel>
+
+		<Pivot Grid.Row="1">
+			<PivotItem Header="Posiłek">
+				<StackPanel Spacing="20" MaxWidth="500" HorizontalAlignment="Left" Margin="0,20,0,0">
+					<ComboBox Header="Wybierz z katalogu"
+                              ItemsSource="{x:Bind ViewModel.MealTemplates}"
+                              SelectedItem="{x:Bind ViewModel.SelectedMeal, Mode=TwoWay}"
+                              HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate x:DataType="templates:MealTemplate">
+								<TextBlock Text="{x:Bind Name}"/>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+
+					<NumberBox Header="Ilość / Porcje" 
+                               Value="{x:Bind ViewModel.Quantity, Mode=TwoWay}"
+                               SpinButtonPlacementMode="Inline"
+                               SmallChange="0.5"/>
+
+					<Button Content="Dodaj posiłek" 
+                            Command="{x:Bind ViewModel.SaveMealCommand}"
+                            Style="{StaticResource AccentButtonStyle}"
+                            HorizontalAlignment="Stretch" Height="40"/>
+				</StackPanel>
+			</PivotItem>
+
+			<PivotItem Header="Aktywność">
+				<StackPanel Spacing="20" MaxWidth="500" HorizontalAlignment="Left" Margin="0,20,0,0">
+					<ComboBox Header="Rodzaj aktywności"
+                              ItemsSource="{x:Bind ViewModel.ActivityTemplates}"
+                              SelectedItem="{x:Bind ViewModel.SelectedActivity, Mode=TwoWay}"
+                              HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate x:DataType="templates:ActivityTemplate">
+								<TextBlock Text="{x:Bind Name}"/>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+
+					<NumberBox Header="Czas trwania (minuty)" 
+                               Value="{x:Bind ViewModel.Duration, Mode=TwoWay}"
+                               SpinButtonPlacementMode="Inline"/>
+
+					<Button Content="Zapisz aktywność" 
+                            Command="{x:Bind ViewModel.SaveActivityCommand}"
+                            Style="{StaticResource AccentButtonStyle}"
+                            HorizontalAlignment="Stretch" Height="40"/>
+				</StackPanel>
+			</PivotItem>
+		</Pivot>
+	</Grid>
+</Page>

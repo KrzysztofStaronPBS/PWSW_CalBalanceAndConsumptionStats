@@ -54,7 +54,7 @@ public partial class CatalogEditorViewModel : ObservableObject
 			{
 				Name = Name,
 				CaloriesPerPortion = Value,
-				DefaultUnit = UnitName
+				Unit = UnitName
 			};
 			_dataManager.AddMealTemplate(newMealTemplate);
 		}

@@ -18,6 +18,7 @@ public partial class EntriesViewModel : ObservableObject
 	[ObservableProperty] private ObservableCollection<Entry> _filteredEntries = new();
 	[ObservableProperty] private DateTimeOffset? _selectedDateFilter;
 	[ObservableProperty] private int _selectedTypeIndex = 0;
+	[ObservableProperty] private bool _hasEntries;
 
 	public EntriesViewModel(DataManager dataManager, NavigationService navService)
 	{
@@ -30,7 +31,7 @@ public partial class EntriesViewModel : ObservableObject
 	public void LoadData()
 	{
 		_allEntries = _dataManager.GetAllEntries()
-								  .OrderByDescending(e => e.Date)
+								  .OrderByDescending(e => e.DateTime)
 								  .ToList();
 		ApplyFilters();
 	}
@@ -43,7 +44,7 @@ public partial class EntriesViewModel : ObservableObject
 		if (SelectedDateFilter.HasValue)
 		{
 			var filterDate = SelectedDateFilter.Value.DateTime.Date;
-			query = query.Where(e => e.Date.Date == filterDate);
+			query = query.Where(e => e.DateTime.Date == filterDate);
 		}
 
 		if (SelectedTypeIndex == 1) query = query.Where(e => e is Meal);
@@ -54,6 +55,8 @@ public partial class EntriesViewModel : ObservableObject
 		{
 			FilteredEntries.Add(entry);
 		}
+
+		HasEntries = FilteredEntries.Any();
 	}
 
 	[RelayCommand]
@@ -66,4 +69,10 @@ public partial class EntriesViewModel : ObservableObject
 
 	[RelayCommand]
 	private void GoBack() => _navService.Navigate<Views.Pages.MainPage>();
+
+	[RelayCommand]
+	private void GoToAddEntry()
+	{
+		_navService.Navigate<Views.Pages.AddEntryPage>();
+	}
 }

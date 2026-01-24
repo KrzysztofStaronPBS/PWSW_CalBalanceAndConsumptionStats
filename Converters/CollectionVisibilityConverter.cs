@@ -13,6 +13,7 @@ public class CollectionVisibilityConverter : IValueConverter
 	{
 		bool isEmpty = true;
 
+		if (value is bool b) isEmpty = !b;
 		if (value is int count) isEmpty = count == 0;
 		else if (value is IEnumerable enumerable)
 		{
