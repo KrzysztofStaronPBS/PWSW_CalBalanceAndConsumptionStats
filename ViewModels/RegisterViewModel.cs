@@ -1,22 +1,20 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using PWSW_CalBalanceAndConsumptionStats.Models;
 using PWSW_CalBalanceAndConsumptionStats.Services;
-using PWSW_CalBalanceAndConsumptionStats.Views.Pages; // Dla nawigacji
+using PWSW_CalBalanceAndConsumptionStats.Views.Pages;
 
 namespace PWSW_CalBalanceAndConsumptionStats.ViewModels;
 
-public partial class RegisterViewModel : ObservableObject
+public partial class RegisterViewModel(DataManager dataManager, NavigationService navService) : ObservableObject
 {
-	private readonly DataManager _dataManager;
-	private readonly NavigationService _navService;
+	private readonly DataManager _dataManager = dataManager;
+	private readonly NavigationService _navService = navService;
 
-	public RegisterViewModel(DataManager dataManager, NavigationService navService)
-	{
-		_dataManager = dataManager;
-		_navService = navService;
-	}
+	[GeneratedRegex(@"^[a-zA-Z0-9]+$")]
+	private static partial Regex LoginRegex();
 
 	[ObservableProperty] private string _login = string.Empty;
 	[ObservableProperty] private string _password = string.Empty;
@@ -69,7 +67,7 @@ public partial class RegisterViewModel : ObservableObject
 		if (string.IsNullOrWhiteSpace(Login) || Login.Length < 3)
 			return (false, "Login musi mieć co najmniej 3 znaki.");
 
-		if (!Regex.IsMatch(Login, @"^[a-zA-Z0-9]+$"))
+		if (!LoginRegex().IsMatch(Login))
 			return (false, "Login może zawierać tylko litery i cyfry.");
 
 		if (string.IsNullOrWhiteSpace(Password) || Password.Length < 8)
@@ -106,9 +104,9 @@ public partial class RegisterViewModel : ObservableObject
 	private User MapFieldsToUser()
 	{
 		// dane są poprawne, bo metoda wywoływana po ValidateInput
-		int.TryParse(AgeText, out int age);
-		double.TryParse(HeightText.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double height);
-		double.TryParse(WeightText.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double weight);
+		_ = int.TryParse(AgeText, out int age);
+		_ = double.TryParse(HeightText.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out double height);
+		_ = double.TryParse(WeightText.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out double weight);
 
 		double pal = ActivityIndex switch
 		{

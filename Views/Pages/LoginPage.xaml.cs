@@ -22,7 +22,7 @@ public sealed partial class LoginPage : Page
 	{
 		if (e.Key == VirtualKey.Enter)
 		{
-			Login_Click(this, null);
+			PerformLoginAction();
 			e.Handled = true;
 		}
 	}
@@ -37,16 +37,19 @@ public sealed partial class LoginPage : Page
 
 	private async void Login_Click(object sender, RoutedEventArgs e)
 	{
-		// wywo³anie logiki logowania
-		var result = ViewModel.TryLogin();
+		PerformLoginAction();
+	}
 
-		if (!result.Success)
+	private async void PerformLoginAction()
+	{
+		var (success, message) = ViewModel.TryLogin();
+
+		if (!success)
 		{
-			// jeœli b³¹d, show dialog
 			var dialog = new ContentDialog
 			{
 				Title = "B³¹d logowania",
-				Content = result.Message,
+				Content = message,
 				CloseButtonText = "OK",
 				XamlRoot = this.XamlRoot
 			};

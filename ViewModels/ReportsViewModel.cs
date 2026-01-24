@@ -12,21 +12,15 @@ using PWSW_CalBalanceAndConsumptionStats.Views.Pages;
 
 namespace PWSW_CalBalanceAndConsumptionStats.ViewModels;
 
-public partial class ReportsViewModel : ObservableObject
+public partial class ReportsViewModel(DataManager dataManager, NavigationService navService) : ObservableObject
 {
-	private readonly DataManager _dataManager;
-	private readonly NavigationService _navService;
+	private readonly DataManager _dataManager = dataManager;
+	private readonly NavigationService _navService = navService;
 	[ObservableProperty] private DateTimeOffset _startDate = DateTimeOffset.Now.AddDays(-7);
 	[ObservableProperty] private DateTimeOffset _endDate = DateTimeOffset.Now;
-	public ObservableCollection<ReportDay> ReportEntries { get; } = new();
+	public ObservableCollection<ReportDay> ReportEntries { get; } = [];
 
-	public ReportsViewModel(DataManager dataManager, NavigationService navService)
-	{
-		_dataManager = dataManager;
-		_navService = navService;
-	}
-
-	[RelayCommand]
+    [RelayCommand]
 	public void GenerateReport()
 	{
 		ReportEntries.Clear();

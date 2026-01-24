@@ -28,14 +28,14 @@ public sealed partial class RegisterPage : Page
 	// klikniêcie "Utwórz konto"
 	private async void Register_Click(object sender, RoutedEventArgs e)
 	{
-		var result = ViewModel.RegisterUser();
+		var (Success, Message) = ViewModel.RegisterUser();
 
-		if (!result.Success)
+		if (!Success)
 		{
 			var dialog = new ContentDialog
 			{
 				Title = "B³¹d rejestracji",
-				Content = result.Message,
+				Content = Message,
 				CloseButtonText = "Popraw dane",
 				XamlRoot = this.XamlRoot
 			};

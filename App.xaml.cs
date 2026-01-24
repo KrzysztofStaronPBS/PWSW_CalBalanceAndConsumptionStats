@@ -33,7 +33,7 @@ namespace PWSW_CalBalanceAndConsumptionStats
     public sealed partial class App : Application
     {
         private Window? _window;
-		public IServiceProvider Services { get; }
+		public IServiceProvider Services { get; } = ConfigureServices();
 		public new static App Current => (App)Application.Current;
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace PWSW_CalBalanceAndConsumptionStats
 			Services = ConfigureServices();
 		}
 
-		private static IServiceProvider ConfigureServices()
+		private static ServiceProvider ConfigureServices()
 		{
 			var services = new ServiceCollection();
 

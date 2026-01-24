@@ -3,16 +3,11 @@ using PWSW_CalBalanceAndConsumptionStats.Models;
 
 namespace PWSW_CalBalanceAndConsumptionStats.Services;
 
-public class ReportGenerator
+public class ReportGenerator(DataManager dataManager)
 {
-	private readonly DataManager _data;
+	private readonly DataManager _data = dataManager;
 
-	public ReportGenerator(DataManager dataManager)
-	{
-		_data = dataManager;
-	}
-
-	public Report GenerateReport(DateTime start, DateTime end)
+    public Report GenerateReport(DateTime start, DateTime end)
 	{
 		var report = new Report
 		{
@@ -25,7 +20,7 @@ public class ReportGenerator
 		{
 			var entries = _data.LoadEntries(date);
 			var summary = new DailySummary { Date = date };
-			summary.Calculate(entries);
+            summary.Calculate(entries);
 			report.Summaries.Add(summary);
 		}
 

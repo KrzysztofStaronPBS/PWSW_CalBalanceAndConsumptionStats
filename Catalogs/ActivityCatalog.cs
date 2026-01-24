@@ -7,7 +7,7 @@ namespace PWSW_CalBalanceAndConsumptionStats.Catalogs;
 
 public class ActivityCatalog
 {
-	public ObservableCollection<ActivityTemplate> Activities { get; set; } = new();
+	public ObservableCollection<ActivityTemplate> Activities { get; set; } = [];
 
 	public void AddTemplate(ActivityTemplate template)
 	{

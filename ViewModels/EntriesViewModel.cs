@@ -13,9 +13,9 @@ public partial class EntriesViewModel : ObservableObject
 {
 	private readonly DataManager _dataManager;
 	private readonly NavigationService _navService;
-	private List<Entry> _allEntries = new();
+	private List<Entry> _allEntries = [];
 
-	[ObservableProperty] private ObservableCollection<Entry> _filteredEntries = new();
+	[ObservableProperty] private ObservableCollection<Entry> _filteredEntries = [];
 	[ObservableProperty] private DateTimeOffset? _selectedDateFilter;
 	[ObservableProperty] private int _selectedTypeIndex = 0;
 	[ObservableProperty] private bool _hasEntries;
@@ -30,9 +30,7 @@ public partial class EntriesViewModel : ObservableObject
 	[RelayCommand]
 	public void LoadData()
 	{
-		_allEntries = _dataManager.GetAllEntries()
-								  .OrderByDescending(e => e.DateTime)
-								  .ToList();
+		_allEntries = [.. _dataManager.GetAllEntries().OrderByDescending(e => e.DateTime)];
 		ApplyFilters();
 	}
 

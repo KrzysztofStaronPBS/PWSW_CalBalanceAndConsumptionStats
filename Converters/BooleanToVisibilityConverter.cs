@@ -4,13 +4,13 @@ using Microsoft.UI.Xaml.Data;
 
 namespace PWSW_CalBalanceAndConsumptionStats.Converters;
 
-public class BooleanToVisibilityConverter : IValueConverter
+public partial class BooleanToVisibilityConverter : IValueConverter
 {
 	public object Convert(object value, Type targetType, object parameter, string language)
 	{
-		if (value is bool b && b) return Visibility.Visible;
-		return Visibility.Collapsed;
+		return value is bool b && b ? Visibility.Visible : Visibility.Collapsed;
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+	public object ConvertBack(object value, Type targetType, object parameter, string language) 
+		=> throw new NotImplementedException();
 }

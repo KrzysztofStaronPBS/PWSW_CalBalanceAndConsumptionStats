@@ -1,7 +1,8 @@
+using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using Microsoft.Extensions.DependencyInjection;
 using PWSW_CalBalanceAndConsumptionStats.Services;
 using PWSW_CalBalanceAndConsumptionStats.Views.Pages;
 using Windows.Graphics;
@@ -11,7 +12,7 @@ namespace PWSW_CalBalanceAndConsumptionStats
 {
 	public sealed partial class MainWindow : Window
 	{
-		private AppWindow _appWindow;
+		private AppWindow? _appWindow;
 
 		public MainWindow()
 		{
@@ -25,16 +26,15 @@ namespace PWSW_CalBalanceAndConsumptionStats
 
 		private void InitializeWindow()
 		{
-			System.IntPtr hWnd = WindowNative.GetWindowHandle(this);
+			IntPtr hWnd = WindowNative.GetWindowHandle(this);
 			WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
+
 			_appWindow = AppWindow.GetFromWindowId(windowId);
 
-			if (_appWindow != null)
+			if (_appWindow is not null)
 			{
-				SizeInt32 windowSize = new SizeInt32(1200, 800);
+				SizeInt32 windowSize = new(1200, 800);
 				_appWindow.Resize(windowSize);
-
-				// œrodkowanie okna wzglêdem ekranu roboczego
 				CenterWindow(windowId);
 			}
 		}
@@ -42,14 +42,15 @@ namespace PWSW_CalBalanceAndConsumptionStats
 		private void CenterWindow(WindowId windowId)
 		{
 			DisplayArea displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Nearest);
-			if (displayArea != null)
+
+			if (displayArea != null && _appWindow is AppWindow window)
 			{
 				var centeredPosition = new PointInt32
 				{
-					X = (displayArea.WorkArea.Width - _appWindow.Size.Width) / 2,
-					Y = (displayArea.WorkArea.Height - _appWindow.Size.Height) / 2
+					X = (displayArea.WorkArea.Width - window.Size.Width) / 2,
+					Y = (displayArea.WorkArea.Height - window.Size.Height) / 2
 				};
-				_appWindow.Move(centeredPosition);
+				window.Move(centeredPosition);
 			}
 		}
 	}

@@ -12,11 +12,11 @@ public partial class AddEntryViewModel : ObservableObject
 	private readonly DataManager _dataManager;
 	private readonly NavigationService _navService;
 
-	[ObservableProperty] private ObservableCollection<MealTemplate> _mealTemplates = new();
-	[ObservableProperty] private ObservableCollection<ActivityTemplate> _activityTemplates = new();
+	[ObservableProperty] private ObservableCollection<MealTemplate> _mealTemplates = [];
+	[ObservableProperty] private ObservableCollection<ActivityTemplate> _activityTemplates = [];
 
-	[ObservableProperty] private MealTemplate _selectedMeal;
-	[ObservableProperty] private ActivityTemplate _selectedActivity;
+	[ObservableProperty] private MealTemplate? _selectedMeal;
+	[ObservableProperty] private ActivityTemplate? _selectedActivity;
 
 	[ObservableProperty] private double _quantity = 1;
 	[ObservableProperty] private int _duration = 30;
@@ -57,6 +57,8 @@ public partial class AddEntryViewModel : ObservableObject
 	{
 		if (SelectedActivity == null || Duration <= 0) return;
 
+		if (_dataManager.CurrentUser == null) return;
+
 		var activityEntry = new Activity
 		{
 			Name = SelectedActivity.Name,
@@ -65,7 +67,6 @@ public partial class AddEntryViewModel : ObservableObject
 			DateTime = System.DateTime.Now
 		};
 
-		// Twoja metoda obliczająca kcal na podstawie wagi usera z userdata.json
 		activityEntry.CalculateCalories(_dataManager.CurrentUser);
 
 		_dataManager.AddEntryToToday(activityEntry);

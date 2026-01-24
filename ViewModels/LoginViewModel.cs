@@ -4,21 +4,15 @@ using PWSW_CalBalanceAndConsumptionStats.Services;
 
 namespace PWSW_CalBalanceAndConsumptionStats.ViewModels;
 
-public partial class LoginViewModel : ObservableObject
+public partial class LoginViewModel(DataManager dataManager, NavigationService navService) : ObservableObject
 {
-	private readonly DataManager _dataManager;
-	private readonly NavigationService _navService;
+	private readonly DataManager _dataManager = dataManager;
+	private readonly NavigationService _navService = navService;
 
 	[ObservableProperty] private string _loginInput = string.Empty;
 	[ObservableProperty] private string _passwordInput = string.Empty;
 
-	public LoginViewModel(DataManager dataManager, NavigationService navService)
-	{
-		_dataManager = dataManager;
-		_navService = navService;
-	}
-
-	[RelayCommand]
+    [RelayCommand]
 	private void GoToRegister()
 	{
 		_navService.Navigate<Views.Pages.RegisterPage>();

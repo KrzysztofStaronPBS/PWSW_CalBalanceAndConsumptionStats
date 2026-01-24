@@ -7,10 +7,10 @@ using PWSW_CalBalanceAndConsumptionStats.Catalogs;
 
 namespace PWSW_CalBalanceAndConsumptionStats.ViewModels;
 
-public partial class CatalogEditorViewModel : ObservableObject
+public partial class CatalogEditorViewModel(DataManager dataManager, NavigationService navService) : ObservableObject
 {
-	private readonly DataManager _dataManager;
-	private readonly NavigationService _navService;
+	private readonly DataManager _dataManager = dataManager;
+	private readonly NavigationService _navService = navService;
 
 	[ObservableProperty] private string _name = string.Empty;
 	[ObservableProperty] private double _value;
@@ -35,13 +35,7 @@ public partial class CatalogEditorViewModel : ObservableObject
 	// Dynamiczna etykieta
 	public string ValueLabel => SelectedTypeIndex == 0 ? "Kalorie na 1 jednostkę" : "Wartość MET";
 
-	public CatalogEditorViewModel(DataManager dataManager, NavigationService navService)
-	{
-		_dataManager = dataManager;
-		_navService = navService;
-	}
-
-	[RelayCommand]
+    [RelayCommand]
 	private void SaveToDatabase()
 	{
 		if (string.IsNullOrWhiteSpace(Name) || Value <= 0) return;

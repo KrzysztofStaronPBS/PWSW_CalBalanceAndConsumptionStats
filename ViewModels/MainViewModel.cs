@@ -19,17 +19,18 @@ public partial class MainViewModel : ObservableObject
 	[ObservableProperty] private double _totalBurned;
 	[ObservableProperty] private double _remaining;
 	[ObservableProperty] private double _progressValue;
-	[ObservableProperty] private string _progressText;
+	[ObservableProperty] private string _progressText = "Obliczanie...";
 
 	public MainViewModel(NavigationService navService, DataManager dataManager)
 	{
 		_navService = navService;
 		_dataManager = dataManager;
 
-		if (_dataManager.CurrentUser != null)
+		if (_dataManager.CurrentUser is not null)
 		{
 			WelcomeMessage = $"Witaj, {_dataManager.CurrentUser.Name}!";
 		}
+
 		UpdateDashboard();
 	}
 

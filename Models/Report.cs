@@ -8,5 +8,5 @@ public class Report
 	public string Title { get; set; } = string.Empty;
 	public DateTime StartDate { get; set; }
 	public DateTime EndDate { get; set; }
-	public List<DailySummary> Summaries { get; set; } = new();
+	public List<DailySummary> Summaries { get; set; } = [];
 }

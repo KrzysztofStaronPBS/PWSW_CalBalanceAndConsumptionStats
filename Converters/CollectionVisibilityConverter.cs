@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace PWSW_CalBalanceAndConsumptionStats.Converters;
 
-public class CollectionVisibilityConverter : IValueConverter
+public partial class CollectionVisibilityConverter : IValueConverter
 {
 	public bool Invert { get; set; }
 

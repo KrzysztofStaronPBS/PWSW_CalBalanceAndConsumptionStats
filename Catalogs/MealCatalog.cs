@@ -8,7 +8,7 @@ namespace PWSW_CalBalanceAndConsumptionStats.Catalogs;
 public class MealCatalog
 {
 	// ObservableCollection dla automatycznego powiadamiania UI
-	public ObservableCollection<MealTemplate> Meals { get; set; } = new();
+	public ObservableCollection<MealTemplate> Meals { get; set; } = [];
 
 	public void AddTemplate(MealTemplate template)
 	{

@@ -24,7 +24,5 @@ public abstract class Entry
 	public override string ToString() => $"{Type}: {Name} ({Calories:F1} kcal) - {DateTime:yyyy-MM-dd}";
 }
 
-public class InvalidEntryException : Exception
-{
-	public InvalidEntryException(string message) : base(message) { }
-}
+public class InvalidEntryException(string message) : Exception(message)
+{ }

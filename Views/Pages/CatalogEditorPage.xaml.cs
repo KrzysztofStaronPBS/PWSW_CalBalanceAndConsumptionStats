@@ -14,5 +14,5 @@ public sealed partial class CatalogEditorPage : Page
 		this.ViewModel = App.Current.Services.GetRequiredService<CatalogEditorViewModel>();
 	}
 
-	public string GetValueLabel(int index) => index == 0 ? "kcal/100g" : "MET";
+    public static string GetValueLabel(int index) => index == 0 ? "kcal/100g" : "MET";
 }
