@@ -1,0 +1,80 @@
+<Page
+    x:Class="PWSW_CalBalanceAndConsumptionStats.Views.Pages.CatalogEditorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:PWSW_CalBalanceAndConsumptionStats.Converters"
+    mc:Ignorable="d">
+
+	<Page.Resources>
+		<converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+	</Page.Resources>
+
+	<Grid Background="#FFF5F6F8">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<StackPanel Orientation="Horizontal" Padding="20" Spacing="15">
+			<Button Command="{x:Bind ViewModel.GoBackCommand}" Content="&#xE72B;" FontFamily="Segoe MDL2 Assets" Background="Transparent" BorderThickness="0"/>
+			<TextBlock Text="Katalog Posiłków oraz Aktywności Fizycznych" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+		</StackPanel>
+
+		<Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+			<StackPanel Spacing="20" Width="450" Padding="30" Background="White" BorderThickness="1" BorderBrush="LightGray" CornerRadius="8">
+
+				<TextBlock Text="Zdefiniuj nowy posiłek lub aktywność fizyczną do późniejszego użycia" 
+							FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+
+				<ComboBox Header="Typ elementu" HorizontalAlignment="Stretch" 
+                          SelectedIndex="{x:Bind ViewModel.SelectedTypeIndex, Mode=TwoWay}">
+					<ComboBoxItem Content="Posiłek"/>
+					<ComboBoxItem Content="Aktywność fizyczna"/>
+				</ComboBox>
+
+				<TextBox Header="Nazwa" 
+						PlaceholderText="{x:Bind ViewModel.NamePlaceholder, Mode=OneWay}"
+						Text="{x:Bind ViewModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+				<Grid Visibility="{x:Bind ViewModel.IsMealType, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<TextBox Header="Jednostka miary" 
+                             PlaceholderText="np. szt., kromka, g"
+                             Text="{x:Bind ViewModel.UnitName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Grid.Column="0" Margin="0,0,10,0"/>
+
+					<TextBlock Text="Określ, co jest pojedynczą porcją (np. 1 sztuka)." 
+                               Grid.Column="1" VerticalAlignment="Center" Foreground="Gray" 
+                               FontSize="12" TextWrapping="Wrap"/>
+				</Grid>
+
+				<Grid ColumnSpacing="10">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+
+					<NumberBox Header="{x:Bind ViewModel.ValueLabel, Mode=OneWay}" 
+                               Value="{x:Bind ViewModel.Value, Mode=TwoWay}"
+                               SpinButtonPlacementMode="Compact"
+                               Grid.Column="0"/>
+
+					<TextBlock Text="{x:Bind ViewModel.UnitSuffix, Mode=OneWay}" 
+								VerticalAlignment="Bottom" Margin="0,0,0,8" 
+								Grid.Column="1" Foreground="Gray" FontWeight="Medium"/>
+				</Grid>
+
+				<Button Content="Zapisz w katalogu" 
+                        Command="{x:Bind ViewModel.SaveToDatabaseCommand}"
+                        Style="{StaticResource AccentButtonStyle}" 
+                        HorizontalAlignment="Stretch" Height="45" Margin="0,10,0,0"/>
+			</StackPanel>
+		</Grid>
+	</Grid>
+</Page>

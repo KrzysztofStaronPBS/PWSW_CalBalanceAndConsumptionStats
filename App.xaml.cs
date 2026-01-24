@@ -50,7 +50,13 @@ namespace PWSW_CalBalanceAndConsumptionStats
 		{
 			var services = new ServiceCollection();
 
-			string localPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "UserData");
+			string localPath = Path.Combine(
+					Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+					"Count-Your-Calories",
+					"UserData"
+				);
+
+			Directory.CreateDirectory(localPath);
 
 			services.AddSingleton(new DataManager(localPath));
 
@@ -64,6 +70,7 @@ namespace PWSW_CalBalanceAndConsumptionStats
 
 			services.AddTransient<ProfileViewModel>();
 			services.AddTransient<EntriesViewModel>();
+			services.AddTransient<CatalogEditorViewModel>();
 
 			return services.BuildServiceProvider();
 		}

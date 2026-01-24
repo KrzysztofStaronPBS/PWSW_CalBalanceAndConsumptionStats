@@ -15,12 +15,10 @@ public class User
 	public double BMI { get; private set; }
 	public int GoalCalories { get; set; }
 
-	// TypeNameHandling, aby JSON wiedział czy to Meal czy Activity
-	public List<Entry> Entries { get; set; } = new();
-
 	public void CalculateBMI()
 	{
-		if (Height > 0) Math.Round(BMI = Weight / (Height * Height), 2);
+		if (Height > 0)
+			BMI = Math.Round(Weight / (Height * Height), 2);
 	}
 
 	public void Validate()

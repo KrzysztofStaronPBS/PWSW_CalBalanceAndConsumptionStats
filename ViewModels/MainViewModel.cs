@@ -35,7 +35,7 @@ public partial class MainViewModel : ObservableObject
 	[RelayCommand]
 	private void NavigateToCatalog()
 	{
-		// _navService.Navigate<MealsCatalogPage>();
+		_navService.Navigate<CatalogEditorPage>();
 	}
 
 	// generuj raport

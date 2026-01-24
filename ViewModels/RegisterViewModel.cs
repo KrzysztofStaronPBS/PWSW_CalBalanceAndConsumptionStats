@@ -41,16 +41,16 @@ public partial class RegisterViewModel : ObservableObject
 
 		try
 		{
-			// sprawdzenie czy użytkownik już istnieje
-			if (_dataManager.HasUserData)
-				return (false, "Użytkownik już istnieje. Zresetuj dane w ustawieniach.");
+			// sprawdzenie czy użytkownik o takim LOGINIE już istnieje
+			if (_dataManager.DoesUserExist(Login))
+				return (false, "Użytkownik o tym loginie już istnieje. Wybierz inną nazwę.");
 
-			// mapowanie i tworzenie modelu
+			// mapowanie pól do modelu User
 			var newUser = MapFieldsToUser();
 
-			// zapis (DataManager) i ustawienie sesji
-			_dataManager.SaveUserData(newUser);
-			_dataManager.CurrentUser = newUser;
+			// inicjalizacja struktury katalogów i zapis (DataManager)
+			// to utworzy folder /UserData/Login/ oraz pliki JSON
+			_dataManager.InitializeUserStructure(newUser.Name, newUser);
 
 			// nawigacja do MainPage
 			_navService.Navigate<MainPage>();
@@ -59,7 +59,7 @@ public partial class RegisterViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			return (false, $"Błąd krytyczny zapisu: {ex.Message}");
+			return (false, $"Błąd krytyczny podczas rejestracji: {ex.Message}");
 		}
 	}
 

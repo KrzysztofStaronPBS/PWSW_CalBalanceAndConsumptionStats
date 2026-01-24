@@ -27,31 +27,31 @@ public partial class LoginViewModel : ObservableObject
 	// metoda zwraca (bool Success, string ErrorMessage)
 	public (bool Success, string Message) TryLogin()
 	{
-		// walidacja wstępna
 		if (string.IsNullOrWhiteSpace(LoginInput))
 			return (false, "Podaj login.");
 
 		if (string.IsNullOrWhiteSpace(PasswordInput))
 			return (false, "Podaj hasło.");
 
-		// sprawdzenie czy jakikolwiek użytkownik istnieje
-		if (!_dataManager.HasUserData)
-			return (false, "Brak profilu użytkownika na tym urządzeniu. Zarejestruj się.");
+		// sprawdzenie czy folder i plik istnieją dla tego konkretnego loginu
+		if (!_dataManager.DoesUserExist(LoginInput))
+		{
+			return (false, "Użytkownik o podanym loginie nie istnieje.");
+		}
 
-		// weryfikacja danych
-		var user = _dataManager.LoadUserData();
+		// wczytanie danych tego konkretnego użytkownika
+		var user = _dataManager.LoadSpecificUser(LoginInput);
 
-		// sprawdzenie czy login się zgadza (case-insensitive dla wygody)
-		if (!string.Equals(user.Name, LoginInput, System.StringComparison.OrdinalIgnoreCase))
-			return (false, "Niepoprawny login.");
+		if (user == null)
+			return (false, "Błąd podczas wczytywania danych profilu.");
 
-		// sprawdzamy hasło
-		// TODO: w przyszłości warto dodać hashowanie!
+		// weryfikacja hasła
 		if (user.Password != PasswordInput)
 			return (false, "Niepoprawne hasło.");
 
-		// sukces - nawigacja do ekranu głównego
+		// ustawienie sesji
 		_dataManager.CurrentUser = user;
+
 		_navService.Navigate<Views.Pages.MainPage>();
 		return (true, string.Empty);
 	}
