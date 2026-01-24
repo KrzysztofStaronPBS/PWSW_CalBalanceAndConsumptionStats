@@ -48,21 +48,24 @@
 				</StackPanel>
 
 				<StackPanel Margin="0,10,0,0">
-					<TextBlock Text="Cel" FontSize="15" FontWeight="SemiBold"/>
+					<TextBlock Text="Poziom aktywności fizycznej" FontSize="15" FontWeight="SemiBold"/>
+					<ComboBox SelectedIndex="{x:Bind ViewModel.ActivityIndex, Mode=TwoWay}" HorizontalAlignment="Stretch">
+						<ComboBoxItem Content="Wybierz poziom aktywności..." IsEnabled="False"/>
+						<ComboBoxItem Content="Brak (praca siedząca)"/>
+						<ComboBoxItem Content="Niska (1-2 treningi/tydz)"/>
+						<ComboBoxItem Content="Średnia (3-5 treningów/tydz)"/>
+						<ComboBoxItem Content="Wysoka (codzienne treningi)"/>
+					</ComboBox>
+				</StackPanel>
+
+				<StackPanel Margin="0,10,0,0">
+					<TextBlock Text="Cel sylwetkowy" FontSize="15" FontWeight="SemiBold"/>
 					<ComboBox SelectedIndex="{x:Bind ViewModel.GoalTypeIndex, Mode=TwoWay}" HorizontalAlignment="Stretch">
 						<ComboBoxItem Content="Wybierz swój cel..." IsEnabled="False"/>
 						<ComboBoxItem Content="Chcę schudnąć"/>
 						<ComboBoxItem Content="Chcę utrzymać wagę"/>
 						<ComboBoxItem Content="Chcę przytyć"/>
 					</ComboBox>
-				</StackPanel>
-
-				<StackPanel Margin="0,10,0,0" Visibility="{x:Bind ViewModel.IsGoalValueVisible, Mode=OneWay}">
-					<TextBlock Text="Ile dziennie?" FontSize="15" FontWeight="SemiBold"/>
-					<StackPanel Orientation="Horizontal">
-						<TextBox Text="{x:Bind ViewModel.GoalValueText, Mode=TwoWay}" Width="150"/>
-						<TextBlock Text="kcal" VerticalAlignment="Center" Margin="10,0,0,0"/>
-					</StackPanel>
 				</StackPanel>
 
 				<Button Content="Utwórz konto" Click="Register_Click"

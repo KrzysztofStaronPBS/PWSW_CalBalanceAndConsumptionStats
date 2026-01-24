@@ -24,6 +24,7 @@ public partial class RegisterViewModel : ObservableObject
 	[ObservableProperty] private string _heightText = string.Empty;
 	[ObservableProperty] private string _weightText = string.Empty;
 	[ObservableProperty] private int _genderIndex = 0;
+	[ObservableProperty] private int _activityIndex = 0;
 
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(IsGoalValueVisible))]
@@ -109,6 +110,15 @@ public partial class RegisterViewModel : ObservableObject
 		double.TryParse(HeightText.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double height);
 		double.TryParse(WeightText.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double weight);
 
+		double pal = ActivityIndex switch
+		{
+			1 => 1.2,   // siedzący
+			2 => 1.375, // niska aktywność
+			3 => 1.55,  // średnia
+			4 => 1.725, // wysoka
+			_ => 1.2
+		};
+
 		int goalOffset = 0;
 		if (int.TryParse(GoalValueText, out int val))
 		{
@@ -121,10 +131,11 @@ public partial class RegisterViewModel : ObservableObject
 			Name = Login,
 			Password = Password,
 			Age = age,
-			Gender = GenderIndex == 1 ? "K" : "M",
+			Gender = GenderIndex == 1 ? Gender.K : Gender.M,
 			Height = height,
 			Weight = weight,
-			GoalCalories = goalOffset
+			ActivityLevel = pal,
+			DailyGoalOffset = goalOffset
 		};
 		user.CalculateBMI();
 		return user;

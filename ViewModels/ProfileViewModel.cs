@@ -26,7 +26,12 @@ public partial class ProfileViewModel : ObservableObject
 		{
 			CurrentUser.CalculateBMI();
 
-			DisplayGender = CurrentUser.Gender?.ToLower() == "m" ? "Mężczyzna" : "Kobieta";
+			DisplayGender = CurrentUser.Gender switch
+			{
+				Gender.M => "Mężczyzna",
+				Gender.K => "Kobieta",
+				_ => "Nieokreślona"
+			};
 
 			UpdateBmiStatus();
 		}
@@ -50,10 +55,7 @@ public partial class ProfileViewModel : ObservableObject
 	}
 
 	[RelayCommand]
-	private void GoBack()
-	{
-		_navService.Navigate<MainPage>();
-	}
+	private void GoBack() => _navService.Navigate<MainPage>();
 
 	[RelayCommand]
 	private void Logout()
