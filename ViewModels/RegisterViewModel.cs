@@ -92,12 +92,6 @@ public partial class RegisterViewModel(DataManager dataManager, NavigationServic
 		if (GoalTypeIndex == 0)
 			return (false, "Wybierz cel.");
 
-		if (IsGoalValueVisible)
-		{
-			if (!int.TryParse(GoalValueText, out _))
-				return (false, "Podaj poprawną wartość kaloryczną celu.");
-		}
-
 		return (true, string.Empty);
 	}
 
